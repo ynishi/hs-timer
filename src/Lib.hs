@@ -31,6 +31,9 @@ data Timer
   | After String
           Timer
           Timer
+  | Repeat String
+           Timer
+           Int
   | Same String
          Timer
          Timer
@@ -55,6 +58,9 @@ eval (After s x y) = do
   putStrLn s
   eval x
   eval y
+eval (Repeat s t n) = do
+  putStrLn s
+  for_ (replicate n ()) $ \() -> eval t
 eval (Same s x y) = do
   putStrLn s
   (_, _) <- concurrently (eval x) (eval y)
@@ -65,3 +71,6 @@ unit =
     "unit"
     (Wait "work" (Beep "end") (13 * 60))
     (Wait "summary" (Beep "end") (5 * 60))
+
+oneHour =
+  After "oneHour" (Repeat "3 unit" unit 3) (Wait "other" (Beep "end") (6 * 60))
