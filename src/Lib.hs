@@ -17,7 +17,7 @@ import           System.ProgressBar
 import           Text.Printf
 
 someFunc :: IO ()
-someFunc = forever $ eval unit
+someFunc = forever $ eval oneHour
 
 sec n = n * 1000000
 
@@ -66,11 +66,19 @@ eval (Same s x y) = do
   (_, _) <- concurrently (eval x) (eval y)
   return ()
 
-unit =
+wt = 10
+rt = 3
+ut = wt + rt
+
+wn = 60 `div` ut
+nt = 60 `mod` ut
+
+dunit = unit wt rt
+
+unit w r =
   After
     "unit"
-    (Wait "work" (Beep "end") (13 * 60))
-    (Wait "summary" (Beep "end") (5 * 60))
+    (Wait "work" (Beep "end") (w * 60))
+    (Wait "summary" (Beep "end") (r * 60))
 
-oneHour =
-  After "oneHour" (Repeat "3 unit" unit 3) (Wait "other" (Beep "end") (6 * 60))
+oneHour = After "oneHour" (Repeat ((show wn) ++ " unit") dunit wn) (Wait "rest" (Beep "end") (nt * 60))
