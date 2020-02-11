@@ -27,6 +27,7 @@ dependencies:
 - async
 - terminal-progress-bar
 - text
+- time
 
 library:
   source-dirs: src
